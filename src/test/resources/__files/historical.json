@@ -1,0 +1,11 @@
+{
+    "disclaimer": "https://openexchangerates.org/terms",
+    "license": "https://openexchangerates.org/license",
+    "timestamp":  1609462861,
+    "base": "USD",
+    "rates": {
+        "EUR": 0.822681,
+        "GBP": 0.73135,
+        "RUB": 73.945
+    }
+}
