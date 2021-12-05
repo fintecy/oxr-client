@@ -1,8 +1,5 @@
 package org.fintecy.md.oxr;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.requests.*;
 
@@ -22,14 +19,15 @@ public class OxrClient implements OxrApi {
     private final String rootPath;
     private final String token;
     private final HttpClient client;
-    private final ObjectMapper mapper;
+    private final Deserializer deserializer;
     private final boolean useAuthHeader;
 
-    public OxrClient(String rootPath, String token, boolean useAuthHeader, ObjectMapper mapper, HttpClient httpClient) {
+    public OxrClient(String rootPath, String token, boolean useAuthHeader,
+                     Deserializer deserializer, HttpClient httpClient) {
         this.token = checkRequired(token, "Auth token not provided for OXR client!");
         this.client = checkRequired(httpClient, "Http client required for OXR client");
         this.useAuthHeader = useAuthHeader;
-        this.mapper = mapper;
+        this.deserializer = deserializer;
         this.rootPath = rootPath;
     }
 
@@ -105,8 +103,8 @@ public class OxrClient implements OxrApi {
 
     private <T> T parseResponse(String body, Class<T> modelClass) {
         try {
-            return mapper.readValue(body, modelClass);
-        } catch (JsonProcessingException e) {
+            return deserializer.deserialize(body, modelClass);
+        } catch (Exception e) {
             throw new IllegalStateException("Can parse response", e);
         }
     }
@@ -134,7 +132,7 @@ public class OxrClient implements OxrApi {
     }
 
     static class Builder {
-        private ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        private Deserializer deserializer = new JacksonDeserializer();
         private HttpClient client = HttpClient.newHttpClient();
         private boolean useAuthHeader = true;
         private String token;
@@ -145,8 +143,8 @@ public class OxrClient implements OxrApi {
             return this;
         }
 
-        public Builder objectMapper(ObjectMapper mapper) {
-            this.mapper = mapper;
+        public Builder deserializer(Deserializer deserializer) {
+            this.deserializer = deserializer;
             return this;
         }
 
@@ -166,7 +164,7 @@ public class OxrClient implements OxrApi {
         }
 
         public OxrApi build() {
-            return new OxrClient(rootPath, token, useAuthHeader, mapper, client);
+            return new OxrClient(rootPath, token, useAuthHeader, deserializer, client);
         }
     }
 }

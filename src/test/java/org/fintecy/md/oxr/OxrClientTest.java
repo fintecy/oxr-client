@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.math.BigDecimal.valueOf;
+import static org.fintecy.md.oxr.JacksonDeserializer.withMapper;
 import static org.fintecy.md.oxr.OxrClient.oxrClient;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +48,7 @@ class OxrClientTest {
         var actual = oxrClient()
                 .useClient(HttpClient.newHttpClient())
                 .useAuthHeader(true)
-                .objectMapper(new ObjectMapper().registerModule(new JavaTimeModule()))
+                .deserializer(withMapper(new ObjectMapper().registerModule(new JavaTimeModule())))
                 .authWith("N/A")
                 .rootPath("http://localhost:7777")
                 .build()

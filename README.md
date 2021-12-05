@@ -6,13 +6,16 @@ Async client with CompletableFutures based on new HttpClient (java 11+)
 
 ## Usage
 ### Simple client creation
-`OxrApi client = OxrClient.authorize("YOUR_APP_TOKEN");`
+```
+OxrApi client = OxrClient.authorize("YOUR_APP_TOKEN");
+```
 ### Complex client configuration
 ```
 var client = oxrClient()
     .useClient(HttpClient.newHttpClient())
     .useAuthHeader(true) -- use Auth header vs query param
-    .objectMapper(new ObjectMapper().registerModule(new JavaTimeModule()))
+    .deserializer(withMapper(new ObjectMapper()
+        .registerModule(new JavaTimeModule()))) -- to be able to replace jackson on something else
     .authWith("YOUR_APP_TOKEN")
     .rootPath("https://openexchangerates.org/api") -- just to use stub in tests
     .build();
