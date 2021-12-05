@@ -11,7 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import static org.fintecy.md.oxr.requests.RequestParamsFactory.*;
 
 /**
- * @link https://docs.openexchangerates.org/docs/api-introduction
+ * @author batiaev
+ * @see <a href="https://docs.openexchangerates.org/docs/api-introduction">docs</a>
  */
 public interface OxrApi {
     String ROOT_PATH = "https://openexchangerates.org/api";
@@ -23,7 +24,8 @@ public interface OxrApi {
     CompletableFuture<RatesResponse> spot(QuoteRequestParams params);
 
     /**
-     * @link https://docs.openexchangerates.org/docs/latest-json
+     * @return latest rates
+     * @see <a href="https://docs.openexchangerates.org/docs/latest-json">docs/latest-json</a>
      */
     default CompletableFuture<RatesResponse> latest() {
         return latest(RequestParamsFactory.quoteParams().build());
@@ -32,7 +34,9 @@ public interface OxrApi {
     CompletableFuture<RatesResponse> latest(QuoteRequestParams params);
 
     /**
-     * @link https://docs.openexchangerates.org/docs/historical-json
+     * @param date - historical date for rates
+     * @return historical rates
+     * @see <a href="https://docs.openexchangerates.org/docs/historical-json">docs/historical-json</a>
      */
     default CompletableFuture<RatesResponse> historical(LocalDate date) {
         return historical(RequestParamsFactory.historicalRequest(date).build());
@@ -41,7 +45,8 @@ public interface OxrApi {
     CompletableFuture<RatesResponse> historical(HistoricalRequestParams params);
 
     /**
-     * @link https://docs.openexchangerates.org/docs/currencies-json
+     * @return currencies list
+     * @see <a href="https://docs.openexchangerates.org/docs/currencies-json">docs/currencies-json</a>
      */
     default CompletableFuture<CurrenciesResponse> currencies() {
         return currencies(RequestParamsFactory.currenciesRequest());
@@ -50,7 +55,10 @@ public interface OxrApi {
     CompletableFuture<CurrenciesResponse> currencies(CurrenciesRequestParams params);
 
     /**
-     * @link https://docs.openexchangerates.org/docs/time-series-json
+     * @param start - first date of time series
+     * @param end   - last date of time series
+     * @return time series of rates
+     * @see <a href="https://docs.openexchangerates.org/docs/time-series-json">docs/time-series-json</a>
      */
     default CompletableFuture<TimeSeriesResponse> timeSeries(LocalDate start, LocalDate end) {
         return timeSeries(timeSeriesParams(start, end).build());
@@ -59,7 +67,11 @@ public interface OxrApi {
     CompletableFuture<TimeSeriesResponse> timeSeries(TimeSeriesRequestParams params);
 
     /**
-     * @link https://docs.openexchangerates.org/docs/convert
+     * @param value balance to convert
+     * @param from  original currency
+     * @param to    target currency
+     * @return converted balance
+     * @see <a href="https://docs.openexchangerates.org/docs/convert">docs/convert</a>
      */
     default CompletableFuture<ConvertResponse> convert(double value, Currency from, Currency to) {
         return convert(convertParams(value, from, to));
@@ -68,7 +80,9 @@ public interface OxrApi {
     CompletableFuture<ConvertResponse> convert(ConvertRequestParams params);
 
     /**
-     * @link https://docs.openexchangerates.org/docs/ohlc-json
+     * @param params - quotes params
+     * @return open/high/low/close rates
+     * @see <a href="https://docs.openexchangerates.org/docs/ohlc-json">docs/ohlc-json</a>
      */
     CompletableFuture<OhlcResponse> ohlc(QuoteRequestParams params);
 
@@ -77,7 +91,8 @@ public interface OxrApi {
     }
 
     /**
-     * @link https://docs.openexchangerates.org/docs/usage-json
+     * @return usage stats
+     * @see <a href="https://docs.openexchangerates.org/docs/usage-json">docs/usage-json</a>
      */
     default CompletableFuture<UsageResponse> usage() {
         return usage(RequestParamsFactory.baseParams());

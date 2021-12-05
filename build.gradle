@@ -1,4 +1,8 @@
-apply plugin: 'java'
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
 
 dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -19,10 +23,12 @@ test {
 }
 
 wrapper {
-    gradleVersion = '7.3'
+    gradleVersion = '7.3.1'
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
 }
+
+apply from: "${rootDir}/gradle/publications.gradle"
