@@ -2,7 +2,10 @@ package org.fintecy.md.oxr;
 
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.requests.*;
+import org.fintecy.md.oxr.serialization.Deserializer;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -12,7 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static java.net.http.HttpResponse.BodySubscribers.ofInputStream;
 import static java.util.Optional.ofNullable;
 
 public class OxrClient implements OxrApi {
@@ -22,7 +25,7 @@ public class OxrClient implements OxrApi {
     private final Deserializer deserializer;
     private final boolean useAuthHeader;
 
-    public OxrClient(String rootPath, String token, boolean useAuthHeader,
+    protected OxrClient(String rootPath, String token, boolean useAuthHeader,
                      Deserializer deserializer, HttpClient httpClient) {
         this.token = checkRequired(token, "Auth token not provided for OXR client!");
         this.client = checkRequired(httpClient, "Http client required for OXR client");
@@ -35,8 +38,8 @@ public class OxrClient implements OxrApi {
         return oxrClient().authWith(token).build();
     }
 
-    public static OxrClient.Builder oxrClient() {
-        return new OxrClient.Builder();
+    public static OxrClientBuilder oxrClient() {
+        return new OxrClientBuilder();
     }
 
     public static double checkRequired(double v, String msg) {
@@ -96,15 +99,15 @@ public class OxrClient implements OxrApi {
     }
 
     private <T> CompletableFuture<T> processRequest(HttpRequest request, Class<T> responseType) {
-        return client.sendAsync(request, ofString())
+        return client.sendAsync(request, r -> ofInputStream())
                 .thenApply(HttpResponse::body)
                 .thenApply(s -> parseResponse(s, responseType));
     }
 
-    private <T> T parseResponse(String body, Class<T> modelClass) {
+    private <T> T parseResponse(InputStream body, Class<T> modelClass) {
         try {
             return deserializer.deserialize(body, modelClass);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalStateException("Can parse response", e);
         }
     }
@@ -131,40 +134,4 @@ public class OxrClient implements OxrApi {
         return URI.create(urlBuilder.toString());
     }
 
-    static class Builder {
-        private Deserializer deserializer = new JacksonDeserializer();
-        private HttpClient client = HttpClient.newHttpClient();
-        private boolean useAuthHeader = true;
-        private String token;
-        private String rootPath = ROOT_PATH;
-
-        public Builder useClient(HttpClient client) {
-            this.client = client;
-            return this;
-        }
-
-        public Builder deserializer(Deserializer deserializer) {
-            this.deserializer = deserializer;
-            return this;
-        }
-
-        public Builder rootPath(String rootPath) {
-            this.rootPath = rootPath;
-            return this;
-        }
-
-        public Builder authWith(String token) {
-            this.token = token;
-            return this;
-        }
-
-        public Builder useAuthHeader(boolean useAuthHeader) {
-            this.useAuthHeader = useAuthHeader;
-            return this;
-        }
-
-        public OxrApi build() {
-            return new OxrClient(rootPath, token, useAuthHeader, deserializer, client);
-        }
-    }
 }

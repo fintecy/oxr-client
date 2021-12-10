@@ -9,7 +9,6 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'oxr-client'
             from components.java
             versionMapping {
                 usage('java-api') {
@@ -28,7 +27,7 @@ publishing {
                 scm {
                     connection = 'scm:git:https://github.com/fintecy/oxr-client.git'
                     developerConnection = 'scm:git:https://github.com/fintecy/oxr-client.git'
-                    url = 'https://github.com/fintecy/oxr-client'
+                    url = 'https://fintecy.github.io/oxr-client'
                 }
 
                 licenses {

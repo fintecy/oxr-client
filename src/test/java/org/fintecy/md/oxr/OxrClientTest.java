@@ -21,8 +21,10 @@ import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.math.BigDecimal.valueOf;
-import static org.fintecy.md.oxr.JacksonDeserializer.withMapper;
 import static org.fintecy.md.oxr.OxrClient.oxrClient;
+import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.oxr.model.ExchangeRate.exchangeRate;
+import static org.fintecy.md.oxr.serialization.JacksonDeserializer.withMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 7777)
@@ -239,29 +241,29 @@ class OxrClientTest {
     private RatesResponse expectedHistoricalResponse(String s) {
         return new RatesResponse(Instant.parse(s), QuoteRequestParams.DEFAULT_BASE_CURRENCY.getCurrencyCode(),
                 Map.of(
-                        "EUR", valueOf(0.822681),
-                        "GBP", valueOf(0.73135),
-                        "RUB", valueOf(73.945)
+                        currency("EUR"), exchangeRate(0.822681),
+                        currency("GBP"), exchangeRate(0.73135),
+                        currency("RUB"), exchangeRate(73.945)
                 ), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
     }
 
     private RatesResponse expectedLatestResponse(String s) {
         return new RatesResponse(Instant.parse(s), QuoteRequestParams.DEFAULT_BASE_CURRENCY.getCurrencyCode(),
                 Map.of(
-                        "EUR", valueOf(0.885055),
-                        "GBP", valueOf(0.751917),
-                        "RUB", valueOf(73.6685)
+                        currency("EUR"), new ExchangeRate(valueOf(0.885), valueOf(0.885055), valueOf(0.886)),
+                        currency("GBP"), exchangeRate(0.751917),
+                        currency("RUB"), exchangeRate(73.6685)
                 ), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
     }
 
     private CurrenciesResponse expectedCurrenciesResponse() {
-        var ccy = new HashMap<String, String>();
-        ccy.put("BTC", "Bitcoin");
-        ccy.put("ETH", "Ethereum");
-        ccy.put("EUR", "Euro");
-        ccy.put("GBP", "British Pound Sterling");
-        ccy.put("RUB", "Russian Ruble");
-        ccy.put("USD", "United States Dollar");
+        var ccy = new HashMap<org.fintecy.md.oxr.model.Currency, String>();
+        ccy.put(currency("BTC"), "Bitcoin");
+        ccy.put(currency("ETH"), "Ethereum");
+        ccy.put(currency("EUR"), "Euro");
+        ccy.put(currency("GBP"), "British Pound Sterling");
+        ccy.put(currency("RUB"), "Russian Ruble");
+        ccy.put(currency("USD"), "United States Dollar");
         return new CurrenciesResponse(ccy);
     }
 

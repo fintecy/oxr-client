@@ -2,36 +2,37 @@ package org.fintecy.md.oxr.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import java.util.Currency;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.fintecy.md.oxr.model.Currency.currency;
+
 public class CurrenciesResponse {
-    private final Map<String, String> availableCurrencies;
+    private final Map<Currency, String> availableCurrencies;
 
     @JsonCreator
-    public CurrenciesResponse(Map<String, String> availableCurrencies) {
+    public CurrenciesResponse(Map<Currency, String> availableCurrencies) {
         this.availableCurrencies = availableCurrencies;
     }
 
-    public Map<String, String> getAvailableCurrencies() {
+    public Map<Currency, String> getAvailableCurrencies() {
         return availableCurrencies;
     }
 
     public boolean contains(String currency) {
-        return contains(Currency.getInstance(currency));
+        return contains(currency(currency));
     }
 
     public boolean contains(Currency currency) {
-        return availableCurrencies.containsKey(currency.getCurrencyCode());
+        return availableCurrencies.containsKey(currency);
     }
 
     public String getCurrencyName(String currency) {
-        return getCurrencyName(Currency.getInstance(currency));
+        return getCurrencyName(currency(currency));
     }
 
     public String getCurrencyName(Currency currency) {
-        return availableCurrencies.get(currency.getCurrencyCode());
+        return availableCurrencies.get(currency);
     }
 
     @Override

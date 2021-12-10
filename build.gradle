@@ -6,12 +6,8 @@ plugins {
 
 dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
-    implementation "ch.qos.logback:logback-core:${lockbackVersion}"
-    implementation "ch.qos.logback:logback-classic:${lockbackVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
-    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
     testImplementation "com.github.tomakehurst:wiremock-jre8:${wireMockVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
