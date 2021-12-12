@@ -1,8 +1,5 @@
 package org.fintecy.md.oxr.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +11,9 @@ public class RatesResponse extends HashMap<Currency, ExchangeRate> {
     private final Instant timestamp;
     private final Currency base;
 
-    @JsonCreator
-    public RatesResponse(@JsonProperty("timestamp") Instant timestamp,
-                         @JsonProperty("base") String base,
-                         @JsonProperty("rates") Map<Currency, ExchangeRate> rates,
-                         @JsonProperty(value = "disclaimer") String disclaimer,
-                         @JsonProperty(value = "license") String license) {
+    public RatesResponse(Instant timestamp,
+                         String base,
+                         Map<Currency, ExchangeRate> rates) {
         this.timestamp = timestamp;
         this.base = currency(base);
         putAll(rates);

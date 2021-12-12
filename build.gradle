@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation "dev.failsafe:failsafe:${failsafeVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
@@ -23,8 +24,8 @@ wrapper {
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
 }
 
 apply from: "${rootDir}/gradle/publications.gradle"

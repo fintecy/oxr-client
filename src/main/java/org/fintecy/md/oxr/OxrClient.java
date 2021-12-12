@@ -1,8 +1,10 @@
 package org.fintecy.md.oxr;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.failsafe.Failsafe;
+import dev.failsafe.Policy;
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.requests.*;
-import org.fintecy.md.oxr.serialization.Deserializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -19,23 +22,29 @@ import static java.net.http.HttpResponse.BodySubscribers.ofInputStream;
 import static java.util.Optional.ofNullable;
 
 public class OxrClient implements OxrApi {
-    private final String rootPath;
     private final String token;
+    private final String rootPath;
     private final HttpClient client;
-    private final Deserializer deserializer;
+    private final ObjectMapper mapper;
     private final boolean useAuthHeader;
+    private final List<Policy<Object>> policies;
 
     protected OxrClient(String rootPath, String token, boolean useAuthHeader,
-                     Deserializer deserializer, HttpClient httpClient) {
+                        ObjectMapper mapper, HttpClient httpClient, List<Policy<Object>> policies) {
         this.token = checkRequired(token, "Auth token not provided for OXR client!");
         this.client = checkRequired(httpClient, "Http client required for OXR client");
+        this.mapper = checkRequired(mapper, "object mapper is required for serialization");
+        this.rootPath = checkRequired(rootPath, "root path cannot be empty");
         this.useAuthHeader = useAuthHeader;
-        this.deserializer = deserializer;
-        this.rootPath = rootPath;
+        this.policies = ofNullable(policies).orElse(List.of());
     }
 
     public static OxrApi authorize(String token) {
         return oxrClient().authWith(token).build();
+    }
+
+    public static OxrClientBuilder oxrClient(String token) {
+        return new OxrClientBuilder().authWith(token);
     }
 
     public static OxrClientBuilder oxrClient() {
@@ -85,7 +94,7 @@ public class OxrClient implements OxrApi {
     @Override
     public CompletableFuture<ConvertResponse> convert(ConvertRequestParams params) {
         return processRequest(format("/convert/%s/%s/%s",
-                        params.getValue(), params.getFrom().getCurrencyCode(), params.getTo().getCurrencyCode()),
+                        params.getValue(), params.getFrom().getCode(), params.getTo().getCode()),
                 params, ConvertResponse.class);
     }
 
@@ -99,14 +108,26 @@ public class OxrClient implements OxrApi {
     }
 
     private <T> CompletableFuture<T> processRequest(HttpRequest request, Class<T> responseType) {
-        return client.sendAsync(request, r -> ofInputStream())
+        var failsafeExecutor = policies.isEmpty() ? Failsafe.none() : Failsafe.with(policies);
+        if (client.executor().isPresent()) {
+            failsafeExecutor = failsafeExecutor.with(client.executor().get());
+        }
+        return failsafeExecutor.getAsync(() -> client.sendAsync(request, v -> ofInputStream()).join())
                 .thenApply(HttpResponse::body)
                 .thenApply(s -> parseResponse(s, responseType));
     }
 
     private <T> T parseResponse(InputStream body, Class<T> modelClass) {
         try {
-            return deserializer.deserialize(body, modelClass);
+            return mapper.readValue(body, modelClass);
+        } catch (IOException e) {
+            throw new IllegalStateException("Can parse response", e);
+        }
+    }
+
+    private <T> T parseResponse(String body, Class<T> modelClass) {
+        try {
+            return mapper.readValue(body, modelClass);
         } catch (IOException e) {
             throw new IllegalStateException("Can parse response", e);
         }
@@ -133,5 +154,4 @@ public class OxrClient implements OxrApi {
         }
         return URI.create(urlBuilder.toString());
     }
-
 }

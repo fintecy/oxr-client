@@ -1,6 +1,6 @@
 package org.fintecy.md.oxr.model;
 
-public class Currency extends MicroType<String> {
+public class Currency extends MicroType<String> implements Comparable<Currency> {
 
     public Currency(String code) {
         super(code);
@@ -15,6 +15,15 @@ public class Currency extends MicroType<String> {
     }
 
     public java.util.Currency toJavaCurrency() {
-        return java.util.Currency.getInstance(getValue());
+        return java.util.Currency.getInstance(value);
+    }
+
+    public String getCode() {
+        return value;
+    }
+
+    @Override
+    public int compareTo(Currency o) {
+        return value.compareTo(o.value);
     }
 }

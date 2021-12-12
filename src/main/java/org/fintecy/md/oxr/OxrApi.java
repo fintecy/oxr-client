@@ -1,11 +1,12 @@
 package org.fintecy.md.oxr;
 
+import org.fintecy.md.oxr.model.Currency;
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.requests.*;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Currency;
 import java.util.concurrent.CompletableFuture;
 
 import static org.fintecy.md.oxr.requests.RequestParamsFactory.*;
@@ -73,7 +74,7 @@ public interface OxrApi {
      * @return converted balance
      * @see <a href="https://docs.openexchangerates.org/docs/convert">docs/convert</a>
      */
-    default CompletableFuture<ConvertResponse> convert(double value, Currency from, Currency to) {
+    default CompletableFuture<ConvertResponse> convert(BigDecimal value, Currency from, Currency to) {
         return convert(convertParams(value, from, to));
     }
 

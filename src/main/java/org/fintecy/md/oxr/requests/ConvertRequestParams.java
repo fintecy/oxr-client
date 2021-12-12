@@ -1,6 +1,8 @@
 package org.fintecy.md.oxr.requests;
 
-import java.util.Currency;
+import org.fintecy.md.oxr.model.Currency;
+
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import static org.fintecy.md.oxr.OxrClient.checkRequired;
@@ -24,18 +26,18 @@ import static org.fintecy.md.oxr.OxrClient.checkRequired;
  * Human-readable response for debugging
  */
 public class ConvertRequestParams extends BaseRequestParams {
-    private final double value;
+    private final BigDecimal value;
     private final Currency from;
     private final Currency to;
 
-    public ConvertRequestParams(double value, Currency from, Currency to, boolean prettyPrint) {
+    public ConvertRequestParams(BigDecimal value, Currency from, Currency to, boolean prettyPrint) {
         super(prettyPrint);
         this.value = checkRequired(value, "value should be not 0");
         this.from = checkRequired(from, "from required for convert params");
         this.to = checkRequired(to, "to required for convert params");
     }
 
-    public double getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
@@ -61,7 +63,7 @@ public class ConvertRequestParams extends BaseRequestParams {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConvertRequestParams that = (ConvertRequestParams) o;
-        return value == that.value && Objects.equals(from, that.from) && Objects.equals(to, that.to);
+        return Objects.equals(value, that.value) && Objects.equals(from, that.from) && Objects.equals(to, that.to);
     }
 
     @Override
@@ -70,15 +72,15 @@ public class ConvertRequestParams extends BaseRequestParams {
     }
 
     public static class Builder extends BaseRequestParams.Builder {
-        private final double value;
+        private final BigDecimal value;
         private Currency from;
         private Currency to;
 
-        public Builder(double value) {
+        public Builder(BigDecimal value) {
             this.value = value;
         }
 
-        public Builder(double value, Currency from, Currency to) {
+        public Builder(BigDecimal value, Currency from, Currency to) {
             this(value);
             this.from = from;
             this.to = to;

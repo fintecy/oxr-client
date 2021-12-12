@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Objects;
 
@@ -12,13 +11,13 @@ public class OhlcResponse {
     private final Instant start;
     private final Instant end;
     private final Currency base;
-    private final Map<String, CandleStick> rates;
+    private final Map<Currency, CandleStick> rates;
 
     @JsonCreator
     public OhlcResponse(@JsonProperty("start_time") Instant start,
                         @JsonProperty("end_time") Instant end,
                         @JsonProperty("base") Currency base,
-                        @JsonProperty("rates") Map<String, CandleStick> rates,
+                        @JsonProperty("rates") Map<Currency, CandleStick> rates,
                         @JsonProperty("disclaimer") String disclaimer,
                         @JsonProperty("license") String license) {
         this.start = start;

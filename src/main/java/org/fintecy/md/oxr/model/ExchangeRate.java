@@ -18,6 +18,10 @@ public class ExchangeRate {
         this.bid = bid;
     }
 
+    public static ExchangeRate exchangeRate(long mid) {
+        return exchangeRate(valueOf(mid));
+    }
+
     public static ExchangeRate exchangeRate(double mid) {
         return exchangeRate(valueOf(mid));
     }
@@ -40,6 +44,8 @@ public class ExchangeRate {
 
     @Override
     public String toString() {
+        if (bid.equals(ask) && bid.equals(mid))
+            return "ExchangeRate(" + mid + ')';
         return "ExchangeRate{" +
                 "bid=" + bid +
                 ", mid=" + mid +

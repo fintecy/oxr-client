@@ -1,8 +1,9 @@
 package org.fintecy.md.oxr.requests;
 
+import org.fintecy.md.oxr.model.Currency;
+
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Currency;
 import java.util.Objects;
 
 /**

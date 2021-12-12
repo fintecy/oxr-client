@@ -1,29 +1,29 @@
 package org.fintecy.md.oxr.requests;
 
+import org.fintecy.md.oxr.model.Currency;
 import org.fintecy.md.oxr.model.OxrPeriod;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Currency;
 import java.util.Objects;
 
 /**
  * Query Params
  * app_id:	stringRequired
  * Your unique App ID.
- *
+ * <p>
  * start_time:	datetimeRequired
  * The start time for the requested OHLC period (ISO-8601 format, UTC only). Restrictions apply (please see below).
- *
+ * <p>
  * period:	stringRequired
  * The requested period (starting on the start_time), e.g. "1m", "30m", "1d". Please see below for supported OHLC periods.
- *
+ * <p>
  * symbols:	stringRecommended
  * Limit results to specific currencies (comma-separated list of 3-letter codes)
- *
+ * <p>
  * base:	stringOptional
  * Change base currency (3-letter code, default: USD)
- *
+ * <p>
  * prettyprint:	booleanOptional
  * Human-readable response for debugging (response size will be much larger)
  */

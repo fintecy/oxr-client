@@ -1,29 +1,32 @@
 package org.fintecy.md.oxr.requests;
 
+import org.fintecy.md.oxr.model.Currency;
+
 import java.util.Collection;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
+
+import static org.fintecy.md.oxr.model.Currency.currency;
 
 /**
  * Query Params
  * app_id:	stringRequired
  * Your unique App ID
- *
+ * <p>
  * base:	stringOptional
  * Change base currency (3-letter code, default: USD)
- *
+ * <p>
  * symbols:	stringOptional
  * Limit results to specific currencies (comma-separated list of 3-letter codes)
- *
+ * <p>
  * prettyprint:	booleanOptional
  * Set to false to reduce response size (removes whitespace)
- *
+ * <p>
  * show_alternative:	booleanOptional
  * Extend returned values with alternative, black market and digital currency rates
  */
 public class QuoteRequestParams extends CurrenciesRequestParams {
-    public final static Currency DEFAULT_BASE_CURRENCY = Currency.getInstance("USD");
+    public final static Currency DEFAULT_BASE_CURRENCY = currency("USD");
     protected final Currency base;
     protected final Collection<Currency> symbols;
     protected final boolean showBidAsk;
@@ -40,7 +43,7 @@ public class QuoteRequestParams extends CurrenciesRequestParams {
         var params = super.toMap();
         params.remove("show_inactive");
         if (!base.equals(DEFAULT_BASE_CURRENCY))
-            params.put("base", base.getCurrencyCode());
+            params.put("base", base.getCode());
         if (!symbols.isEmpty())
             params.put("symbols", symbols);
         //FIXME

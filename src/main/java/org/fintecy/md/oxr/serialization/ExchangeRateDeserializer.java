@@ -16,17 +16,11 @@ public class ExchangeRateDeserializer extends StdDeserializer<ExchangeRate> {
     public final static ExchangeRateDeserializer INSTANCE = new ExchangeRateDeserializer();
 
     public ExchangeRateDeserializer() {
-        this(ExchangeRate.class);
+        super(ExchangeRate.class);
     }
 
-    protected ExchangeRateDeserializer(Class<?> vc) {
-        super(vc);
-    }
-
-    @Override
-    public ExchangeRate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        final JsonNode node = jp.getCodec().readTree(jp);
-        final var isDecimal = node.isBigDecimal() || node.isDouble();
+    public static ExchangeRate parse(JsonParser jp, JsonNode node) throws InvalidFormatException {
+        final var isDecimal = node.isNumber();
         if (isDecimal) {
             final var mid = node.decimalValue();
             return exchangeRate(mid);
@@ -40,5 +34,11 @@ public class ExchangeRateDeserializer extends StdDeserializer<ExchangeRate> {
             final var bid = node.has("bid") ? node.get("bid").decimalValue() : mid;
             return new ExchangeRate(ask, mid, bid);
         }
+    }
+
+    @Override
+    public ExchangeRate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        final JsonNode node = jp.getCodec().readTree(jp);
+        return parse(jp, node);
     }
 }

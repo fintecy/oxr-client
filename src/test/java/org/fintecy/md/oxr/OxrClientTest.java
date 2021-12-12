@@ -3,6 +3,9 @@ package org.fintecy.md.oxr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import dev.failsafe.*;
+import org.fintecy.md.oxr.model.Currency;
+import org.fintecy.md.oxr.model.ExchangeRate;
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.model.usage.ProductFeatures;
 import org.fintecy.md.oxr.model.usage.Usage;
@@ -11,20 +14,28 @@ import org.fintecy.md.oxr.model.usage.UserPlan;
 import org.fintecy.md.oxr.requests.QuoteRequestParams;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.net.http.HttpClient;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Currency;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.math.BigDecimal.valueOf;
-import static org.fintecy.md.oxr.OxrClient.oxrClient;
+import static java.time.Instant.ofEpochMilli;
 import static org.fintecy.md.oxr.model.Currency.currency;
 import static org.fintecy.md.oxr.model.ExchangeRate.exchangeRate;
-import static org.fintecy.md.oxr.serialization.JacksonDeserializer.withMapper;
+import static org.fintecy.md.oxr.OxrClient.oxrClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 7777)
@@ -50,7 +61,7 @@ class OxrClientTest {
         var actual = oxrClient()
                 .useClient(HttpClient.newHttpClient())
                 .useAuthHeader(true)
-                .deserializer(withMapper(new ObjectMapper().registerModule(new JavaTimeModule())))
+                .mapper(new ObjectMapper().registerModule(new JavaTimeModule()))
                 .authWith("N/A")
                 .rootPath("http://localhost:7777")
                 .build()
@@ -83,18 +94,16 @@ class OxrClientTest {
 
     @Test
     void should_convert_amount() throws ExecutionException, InterruptedException {
-
-        var amount = 19999.95;
-        var from = Currency.getInstance("GBP");
-        var to = Currency.getInstance("EUR");
+        var amount = valueOf(19999.95);
+        var from = currency("GBP");
+        var to = currency("EUR");
+        var timestamp = ofEpochMilli(1449885661);
         var api = "convert";
-        stubFor(get("/" + api + "/" + amount + "/" + from + "/" + to + "?prettyprint=0")
+        stubFor(get("/" + api + "/" + amount + "/" + from.getCode() + "/" + to.getCode() + "?prettyprint=0")
                 .willReturn(aResponse()
                         .withBodyFile(api + ".json")));
 
-        var expected = new ConvertResponse(new ConvertRequest("/convert/" + amount + "/" + from + "/" + to,
-                amount, from, to), Map.of("timestamp", 1449885661, "rate", 1.383702), valueOf(27673.975864),
-                "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
+        var expected = new ConvertResponse(timestamp, from, to, amount, valueOf(27673.975864), valueOf(1.383702));
         //when
         var actual = oxrClient()
                 .authWith("N/A")
@@ -204,19 +213,19 @@ class OxrClientTest {
     private OhlcResponse expectedOhlcResponse(Instant start, Instant end) {
         return new OhlcResponse(start, end, QuoteRequestParams.DEFAULT_BASE_CURRENCY,
                 Map.of(
-                        "EUR", new CandleStick(
+                        currency("EUR"), new CandleStick(
                                 valueOf(0.872674),
                                 valueOf(0.872674),
                                 valueOf(0.87203),
                                 valueOf(0.872251),
                                 valueOf(0.872253)),
-                        "GBP", new CandleStick(
+                        currency("GBP"), new CandleStick(
                                 valueOf(0.765284),
                                 valueOf(0.7657),
                                 valueOf(0.7652),
                                 valueOf(0.765541),
                                 valueOf(0.765503)),
-                        "HKD", new CandleStick(
+                        currency("HKD"), new CandleStick(
                                 valueOf(7.804003),
                                 valueOf(7.80568),
                                 valueOf(7.80399),
@@ -226,38 +235,38 @@ class OxrClientTest {
     }
 
     private TimeSeriesResponse expectedTimeSeriesResponse(LocalDate start, LocalDate end) {
-        return new TimeSeriesResponse(start, end, Map.of(
-                start, Map.of(
-                        "EUR", valueOf(0.822681),
-                        "GBP", valueOf(0.73135),
-                        "RUB", valueOf(73.945)
-                ), end, Map.of(
-                        "EUR", valueOf(0.83),
-                        "GBP", valueOf(0.74),
-                        "RUB", valueOf(74)
-                )), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
+        return new TimeSeriesResponse(start, end, new TreeMap<>(Map.of(
+                start, new TreeMap<>(Map.of(
+                        currency("EUR"), exchangeRate(0.822681),
+                        currency("GBP"), exchangeRate(0.73135),
+                        currency("RUB"), exchangeRate(73.945)
+                )), end, new TreeMap<>(Map.of(
+                        currency("EUR"), exchangeRate(0.83),
+                        currency("GBP"), exchangeRate(0.74),
+                        currency("RUB"), exchangeRate(74)
+                )))), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
     }
 
     private RatesResponse expectedHistoricalResponse(String s) {
-        return new RatesResponse(Instant.parse(s), QuoteRequestParams.DEFAULT_BASE_CURRENCY.getCurrencyCode(),
+        return new RatesResponse(Instant.parse(s), QuoteRequestParams.DEFAULT_BASE_CURRENCY.getCode(),
                 Map.of(
                         currency("EUR"), exchangeRate(0.822681),
                         currency("GBP"), exchangeRate(0.73135),
                         currency("RUB"), exchangeRate(73.945)
-                ), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
+                ));
     }
 
     private RatesResponse expectedLatestResponse(String s) {
-        return new RatesResponse(Instant.parse(s), QuoteRequestParams.DEFAULT_BASE_CURRENCY.getCurrencyCode(),
+        return new RatesResponse(Instant.parse(s), QuoteRequestParams.DEFAULT_BASE_CURRENCY.getCode(),
                 Map.of(
                         currency("EUR"), new ExchangeRate(valueOf(0.885), valueOf(0.885055), valueOf(0.886)),
                         currency("GBP"), exchangeRate(0.751917),
                         currency("RUB"), exchangeRate(73.6685)
-                ), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
+                ));
     }
 
     private CurrenciesResponse expectedCurrenciesResponse() {
-        var ccy = new HashMap<org.fintecy.md.oxr.model.Currency, String>();
+        var ccy = new HashMap<Currency, String>();
         ccy.put(currency("BTC"), "Bitcoin");
         ccy.put(currency("ETH"), "Ethereum");
         ccy.put(currency("EUR"), "Euro");

@@ -5,10 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.Currency;
 import java.util.concurrent.ExecutionException;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.LocalDate.now;
+import static org.fintecy.md.oxr.model.Currency.currency;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NoOpOxrApiTest {
@@ -47,10 +48,10 @@ class NoOpOxrApiTest {
     @Test
     void should_throw_exception_for_convert() {
         //given
-        var USD = Currency.getInstance("USD");
-        var GBP = Currency.getInstance("GBP");
+        var USD = currency("USD");
+        var GBP = currency("GBP");
         //when then
-        assertThrows(ExecutionException.class, () -> noOpOxrApi.convert(1d, USD, GBP).get());
+        assertThrows(ExecutionException.class, () -> noOpOxrApi.convert(ONE, USD, GBP).get());
     }
 
     @Test

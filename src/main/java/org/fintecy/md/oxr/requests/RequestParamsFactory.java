@@ -1,10 +1,11 @@
 package org.fintecy.md.oxr.requests;
 
+import org.fintecy.md.oxr.model.Currency;
 import org.fintecy.md.oxr.model.OxrPeriod;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Currency;
 
 public class RequestParamsFactory {
 
@@ -32,11 +33,11 @@ public class RequestParamsFactory {
         return new QuoteRequestParams.Builder().base(base);
     }
 
-    public static ConvertRequestParams.Builder convertAmount(double value) {
+    public static ConvertRequestParams.Builder convertAmount(BigDecimal value) {
         return new ConvertRequestParams.Builder(value);
     }
 
-    public static ConvertRequestParams convertParams(double value, Currency from, Currency to) {
+    public static ConvertRequestParams convertParams(BigDecimal value, Currency from, Currency to) {
         return new ConvertRequestParams.Builder(value, from, to).build();
     }
 

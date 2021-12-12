@@ -3,7 +3,7 @@ package org.fintecy.md.oxr.model;
 import java.util.Objects;
 
 public class MicroType<T> {
-    private final T value;
+    protected final T value;
 
     public MicroType(T value) {
         this.value = value;

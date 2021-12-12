@@ -12,10 +12,20 @@ OxrApi client = OxrClient.authorize("YOUR_APP_TOKEN");
 ### Complex client configuration
 ```
 var client = oxrClient()
-    .useClient(HttpClient.newHttpClient())
+    .useClient(HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.ALWAYS)
+        .priority(10)
+        .connectTimeout(Duration.ofMillis(500))
+        .executor(Executors.newSingleThreadExecutor())
+        .build())
+    .with(CircuitBreaker.ofDefaults())
+    .with(RateLimiter.smoothBuilder(Duration.ofMillis(100))
+        .build())
+    .with(RetryPolicy.ofDefaults())
+    .with(Timeout.of(Duration.ofMillis(400)))
     .useAuthHeader(true) -- use Auth header vs query param
-    .deserializer(withMapper(new ObjectMapper()
-        .registerModule(new JavaTimeModule()))) -- to be able to replace jackson on something else
+    .mapper(new ObjectMapper()-- to be able to configure mapper
+        .registerModule(new JavaTimeModule())) 
     .authWith("YOUR_APP_TOKEN")
     .rootPath("https://openexchangerates.org/api") -- just to use stub in tests
     .build();
@@ -59,6 +69,9 @@ int eurBalance = client
 
 ## Dependencies
 - Java 11+
+- FailSafe
+- Slf4j api
+- Jackson (databind, datatype-jsr310)
 - WireMock (tests)
 - Junit5 (tests)
 
