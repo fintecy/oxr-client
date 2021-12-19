@@ -235,7 +235,7 @@ class OxrClientTest {
     }
 
     private TimeSeriesResponse expectedTimeSeriesResponse(LocalDate start, LocalDate end) {
-        return new TimeSeriesResponse(start, end, new TreeMap<>(Map.of(
+        return new TimeSeriesResponse(currency("USD"), new TreeMap<>(Map.of(
                 start, new TreeMap<>(Map.of(
                         currency("EUR"), exchangeRate(0.822681),
                         currency("GBP"), exchangeRate(0.73135),
@@ -244,7 +244,7 @@ class OxrClientTest {
                         currency("EUR"), exchangeRate(0.83),
                         currency("GBP"), exchangeRate(0.74),
                         currency("RUB"), exchangeRate(74)
-                )))), "https://openexchangerates.org/terms", "https://openexchangerates.org/license");
+                )))));
     }
 
     private RatesResponse expectedHistoricalResponse(String s) {

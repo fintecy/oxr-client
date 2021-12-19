@@ -8,7 +8,7 @@ import java.util.Objects;
  * prettyprint:	boolean1
  * show_alternative:	boolean0
  * Include alternative currencies.
- *
+ * <p>
  * show_inactive:	boolean0
  * Include historical/inactive currencies
  */
@@ -63,12 +63,12 @@ public class CurrenciesRequestParams extends BaseRequestParams {
         protected boolean showInactive;
         protected boolean showAlternative;
 
-        public Builder showInactive(boolean showInactive) {
+        public <T extends Builder> T showInactive(boolean showInactive) {
             this.showInactive = showInactive;
             return self();
         }
 
-        public Builder showAlternative(boolean showAlternative) {
+        public <T extends Builder> T showAlternative(boolean showAlternative) {
             this.showAlternative = showAlternative;
             return self();
         }

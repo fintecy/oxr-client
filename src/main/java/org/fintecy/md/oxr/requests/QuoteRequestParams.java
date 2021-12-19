@@ -46,9 +46,11 @@ public class QuoteRequestParams extends CurrenciesRequestParams {
             params.put("base", base.getCode());
         if (!symbols.isEmpty())
             params.put("symbols", symbols);
+        if (showBidAsk)
+            params.put("show_bid_ask", 1);
+        if (showAlternative)
+            params.put("show_alternative", 1);
         //FIXME
-//        params.put("show_bid_ask", showBidAsk ? 1 : 0);
-//        params.put("show_alternative", showAlternative ? 1 : 0);
 //        params.put("prettyprint", prettyPrint ? 1 : 0);
         return params;
     }
@@ -59,17 +61,17 @@ public class QuoteRequestParams extends CurrenciesRequestParams {
         protected Collection<Currency> symbols = Set.of();
         protected boolean showBidAsk = false;
 
-        public Builder base(Currency base) {
+        public <T extends Builder> T base(Currency base) {
             this.base = base;
             return self();
         }
 
-        public Builder symbols(Collection<Currency> symbols) {
+        public <T extends Builder> T symbols(Collection<Currency> symbols) {
             this.symbols = symbols;
             return self();
         }
 
-        public Builder showBidAsk(boolean showBidAsk) {
+        public <T extends Builder> T showBidAsk(boolean showBidAsk) {
             this.showBidAsk = showBidAsk;
             return self();
         }

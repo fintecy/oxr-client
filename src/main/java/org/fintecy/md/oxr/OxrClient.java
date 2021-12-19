@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
-import static java.net.http.HttpResponse.BodySubscribers.ofInputStream;
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.util.Optional.ofNullable;
 
 public class OxrClient implements OxrApi {
@@ -112,7 +112,7 @@ public class OxrClient implements OxrApi {
         if (client.executor().isPresent()) {
             failsafeExecutor = failsafeExecutor.with(client.executor().get());
         }
-        return failsafeExecutor.getAsync(() -> client.sendAsync(request, v -> ofInputStream()).join())
+        return failsafeExecutor.getAsync(() -> client.sendAsync(request, ofString()).join())
                 .thenApply(HttpResponse::body)
                 .thenApply(s -> parseResponse(s, responseType));
     }

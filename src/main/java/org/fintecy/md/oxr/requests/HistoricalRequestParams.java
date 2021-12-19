@@ -61,6 +61,10 @@ public class HistoricalRequestParams extends QuoteRequestParams {
         return Objects.hash(super.hashCode(), date);
     }
 
+    public HistoricalRequestParams withDate(LocalDate date) {
+        return new HistoricalRequestParams(date, base, symbols, showBidAsk, showAlternative, prettyPrint);
+    }
+
     public static class Builder extends QuoteRequestParams.Builder {
         private final LocalDate date;
 

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalDateKeyDeserializer;
 import org.fintecy.md.oxr.model.ExchangeRate;
 import org.fintecy.md.oxr.model.ConvertResponse;
 import org.fintecy.md.oxr.model.RatesResponse;
+import org.fintecy.md.oxr.model.TimeSeriesResponse;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class OxrModule extends SimpleModule {
         super(OxrModule.class.getSimpleName(), VERSION,
                 Map.of(ExchangeRate.class, ExchangeRateDeserializer.INSTANCE,
                         RatesResponse.class, RatesResponseDeserializer.INSTANCE,
+                        TimeSeriesResponse.class, TimeSeriesResponseDeserializer.INSTANCE,
                         ConvertResponse.class, ConvertResponseDeserializer.INSTANCE,
                         Instant.class, InstantDeserializer.INSTANT,
                         LocalDate.class, LocalDateDeserializer.INSTANCE));
