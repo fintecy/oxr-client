@@ -20,6 +20,10 @@ public class OhlcResponse {
                         @JsonProperty("rates") Map<Currency, CandleStick> rates,
                         @JsonProperty("disclaimer") String disclaimer,
                         @JsonProperty("license") String license) {
+        this(start, end, base, rates);
+    }
+
+    public OhlcResponse(Instant start, Instant end, Currency base, Map<Currency, CandleStick> rates) {
         this.start = start;
         this.end = end;
         this.base = base;
