@@ -1,8 +1,9 @@
 {
-    "disclaimer": "https://openexchangerates.org/terms",
+    "disclaimer": "Usage subject to terms: https://openexchangerates.org/terms",
     "license": "https://openexchangerates.org/license",
-    "start":  "2021-01-01",
-    "end":  "2021-01-02",
+    "start_date": "2022-01-03",
+    "end_date": "2022-01-04",
+    "base": "USD",
     "rates": {
         "2021-01-01": {
             "EUR": 0.822681,
