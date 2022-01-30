@@ -32,6 +32,8 @@ public class OxrClient implements OxrApi {
     protected OxrClient(String rootPath, String token, boolean useAuthHeader,
                         ObjectMapper mapper, HttpClient httpClient, List<Policy<Object>> policies) {
         this.token = checkRequired(token, "Auth token not provided for OXR client!");
+        if (token.trim().isBlank())
+            throw new IllegalArgumentException("Auth token should not be empty!");
         this.client = checkRequired(httpClient, "Http client required for OXR client");
         this.mapper = checkRequired(mapper, "object mapper is required for serialization");
         this.rootPath = checkRequired(rootPath, "root path cannot be empty");
