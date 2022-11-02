@@ -18,7 +18,7 @@ import java.util.Map;
 public class OxrModule extends SimpleModule {
     public static final String GROUP_ID = "org.fintecy.md";
     public static final String ARTIFACT_ID = "oxr-client";
-    public static final Version VERSION = new Version(1, 0, 2, "SNAPSHOT",
+    public static final Version VERSION = new Version(1, 0, 3, "SNAPSHOT",
             GROUP_ID, ARTIFACT_ID);
 
     public OxrModule() {
