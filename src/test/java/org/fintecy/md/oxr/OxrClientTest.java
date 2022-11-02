@@ -3,39 +3,30 @@ package org.fintecy.md.oxr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import dev.failsafe.*;
-import org.fintecy.md.oxr.model.Currency;
-import org.fintecy.md.oxr.model.ExchangeRate;
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.model.usage.ProductFeatures;
 import org.fintecy.md.oxr.model.usage.Usage;
 import org.fintecy.md.oxr.model.usage.UsageData;
 import org.fintecy.md.oxr.model.usage.UserPlan;
+import org.fintecy.md.oxr.requests.OhlcRequestParams;
 import org.fintecy.md.oxr.requests.QuoteRequestParams;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
 import java.net.http.HttpClient;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.math.BigDecimal.valueOf;
 import static java.time.Instant.ofEpochMilli;
+import static org.fintecy.md.oxr.OxrClient.oxrClient;
 import static org.fintecy.md.oxr.model.Currency.currency;
 import static org.fintecy.md.oxr.model.ExchangeRate.exchangeRate;
-import static org.fintecy.md.oxr.OxrClient.oxrClient;
+import static org.fintecy.md.oxr.requests.RequestParamsFactory.ohlcParams;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 7777)
@@ -206,6 +197,29 @@ class OxrClientTest {
                 .rootPath("http://localhost:7777")
                 .build()
                 .ohlc(start, OxrPeriod.DAY)
+                .get();
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void should_return_ohlc_with_params() throws ExecutionException, InterruptedException {
+        var api = "ohlc.json";
+        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0")
+                .willReturn(aResponse()
+                        .withBodyFile(api)));
+
+        var appId = "c4623da1b5d94162b3f32a2717d72483";
+        var start = Instant.parse("2021-01-17T10:00:00Z");
+        var end = Instant.parse("2021-01-18T10:00:00Z");
+        var expected = expectedOhlcResponse(start, end);
+        OhlcRequestParams.Builder builder = ohlcParams(start, OxrPeriod.DAY)
+                .showBidAsk(true)
+                .showAlternative(true);
+        var actual = oxrClient()
+                .authWith(appId)
+                .rootPath("http://localhost:7777")
+                .build()
+                .ohlc(builder.build())
                 .get();
         assertEquals(actual, expected);
     }

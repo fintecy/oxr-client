@@ -46,7 +46,7 @@ public class RequestParamsFactory {
     }
 
     public static QuoteRequestParams.Builder ohlcParams(Instant start, OxrPeriod period) {
-        return new OhlcRequestParams.OhlcBuilder(start, period);
+        return new OhlcRequestParams.Builder(start, period);
     }
 
 }

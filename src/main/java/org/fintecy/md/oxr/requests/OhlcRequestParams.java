@@ -60,11 +60,11 @@ public class OhlcRequestParams extends QuoteRequestParams {
         return Objects.hash(start, period);
     }
 
-    static class OhlcBuilder extends Builder {
+    public static class Builder extends QuoteRequestParams.Builder {
         private final Instant start;
         private final OxrPeriod period;
 
-        public OhlcBuilder(Instant start, OxrPeriod period) {
+        public Builder(Instant start, OxrPeriod period) {
             this.start = start;
             this.period = period;
         }

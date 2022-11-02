@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 public class OhlcResponse {
     private final Instant start;
@@ -28,6 +30,35 @@ public class OhlcResponse {
         this.end = end;
         this.base = base;
         this.rates = rates;
+    }
+
+    public Instant getStart() {
+        return start;
+    }
+
+    public Instant getEnd() {
+        return end;
+    }
+
+    public Currency getBase() {
+        return base;
+    }
+
+    @Deprecated
+    public Map<Currency, CandleStick> getRates() {
+        return rates;
+    }
+
+    public Set<Currency> getCurrencies() {
+        return rates.keySet();
+    }
+
+    public CandleStick getCandle(Currency currency) {
+        return rates.get(currency);
+    }
+
+    public void forEach(BiConsumer<Currency, CandleStick> consumer) {
+        rates.forEach(consumer);
     }
 
     @Override
