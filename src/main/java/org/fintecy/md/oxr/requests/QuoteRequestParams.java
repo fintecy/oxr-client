@@ -1,12 +1,12 @@
 package org.fintecy.md.oxr.requests;
 
-import org.fintecy.md.oxr.model.Currency;
+import org.fintecy.md.common.model.Currency;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 
 /**
  * Query Params

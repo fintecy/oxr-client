@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 import static java.math.BigDecimal.ONE;
 import static java.time.LocalDate.now;
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NoOpOxrApiTest {

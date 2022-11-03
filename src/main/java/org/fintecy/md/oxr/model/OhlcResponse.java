@@ -2,6 +2,7 @@ package org.fintecy.md.oxr.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.fintecy.md.common.model.Currency;
 
 import java.time.Instant;
 import java.util.Map;

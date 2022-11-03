@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.fintecy.md.oxr.model.Currency;
+import org.fintecy.md.common.model.Currency;
 import org.fintecy.md.oxr.model.ExchangeRate;
 import org.fintecy.md.oxr.model.RatesResponse;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import static java.time.Instant.ofEpochSecond;
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 import static org.fintecy.md.oxr.serialization.ExchangeRateDeserializer.parse;
 
 public class RatesResponseDeserializer extends StdDeserializer<RatesResponse> {

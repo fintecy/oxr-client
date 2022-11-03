@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.fintecy.md.oxr.model.Currency;
+import org.fintecy.md.common.model.Currency;
 import org.fintecy.md.oxr.model.ExchangeRate;
 import org.fintecy.md.oxr.model.TimeSeriesResponse;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.util.TreeMap;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Optional.ofNullable;
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 import static org.fintecy.md.oxr.requests.QuoteRequestParams.DEFAULT_BASE_CURRENCY;
 import static org.fintecy.md.oxr.serialization.ExchangeRateDeserializer.parse;
 

@@ -1,6 +1,6 @@
 package org.fintecy.md.oxr.requests;
 
-import org.fintecy.md.oxr.model.Currency;
+import org.fintecy.md.common.model.Currency;
 
 import java.math.BigDecimal;
 import java.util.Objects;

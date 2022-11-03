@@ -1,5 +1,7 @@
 package org.fintecy.md.oxr.model;
 
+import org.fintecy.md.common.model.Currency;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;

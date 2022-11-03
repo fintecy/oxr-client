@@ -1,11 +1,12 @@
 package org.fintecy.md.oxr.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.fintecy.md.common.model.Currency;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 
 public class CurrenciesResponse {
     private final Map<Currency, String> availableCurrencies;

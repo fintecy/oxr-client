@@ -1,11 +1,13 @@
 package org.fintecy.md.oxr.model;
 
+import org.fintecy.md.common.model.Currency;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 
 public class RatesResponse extends HashMap<Currency, ExchangeRate> {
     private final Instant timestamp;

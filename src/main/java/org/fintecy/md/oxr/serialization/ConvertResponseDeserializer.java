@@ -9,7 +9,7 @@ import org.fintecy.md.oxr.model.ConvertResponse;
 import java.io.IOException;
 import java.time.Instant;
 
-import static org.fintecy.md.oxr.model.Currency.currency;
+import static org.fintecy.md.common.model.Currency.currency;
 
 public class ConvertResponseDeserializer extends StdDeserializer<ConvertResponse> {
     public final static ConvertResponseDeserializer INSTANCE = new ConvertResponseDeserializer();

@@ -1,6 +1,6 @@
 package org.fintecy.md.oxr;
 
-import org.fintecy.md.oxr.model.Currency;
+import org.fintecy.md.common.model.Currency;
 import org.fintecy.md.oxr.model.*;
 import org.fintecy.md.oxr.requests.*;
 

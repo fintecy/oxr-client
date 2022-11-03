@@ -1,5 +1,6 @@
 package org.fintecy.md.oxr.model;
 
+import org.fintecy.md.common.model.Currency;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -15,7 +16,7 @@ class CurrencyTest {
     @ParameterizedTest
     @MethodSource("getAvailableCurrencies")
     void shouldConvertJavaCurrencies(java.util.Currency currency) {
-        java.util.Currency actual = Currency.fromJavaCurrency(currency).toJavaCurrency();
+        var actual = Currency.fromJavaCurrency(currency).toJavaCurrency();
         assertEquals(currency, actual);
         System.out.println(currency);
     }
