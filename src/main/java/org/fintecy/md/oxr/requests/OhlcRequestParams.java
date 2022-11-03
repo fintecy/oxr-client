@@ -4,7 +4,9 @@ import org.fintecy.md.oxr.model.Currency;
 import org.fintecy.md.oxr.model.OxrPeriod;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -37,6 +39,14 @@ public class OhlcRequestParams extends QuoteRequestParams {
         super(base, symbols, showBidAsk, showAlternative, prettyPrint);
         this.start = start;
         this.period = period;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var map = super.toMap();
+        map.put("start", start.truncatedTo(ChronoUnit.MINUTES));
+        map.put("period", period.getCode());
+        return map;
     }
 
     @Override

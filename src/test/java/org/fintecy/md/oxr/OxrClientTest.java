@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.net.http.HttpClient;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -184,14 +185,14 @@ class OxrClientTest {
     @Test
     void should_return_ohlc() throws ExecutionException, InterruptedException {
         var api = "ohlc.json";
-        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0")
+        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0&start=2021-01-17T10:23:00Z&period=1d")
                 .willReturn(aResponse()
                         .withBodyFile(api)));
 
         var appId = "c4623da1b5d94162b3f32a2717d72483";
-        var start = Instant.parse("2021-01-17T10:00:00Z");
+        var start = Instant.parse("2021-01-17T10:23:45.123Z");
         var end = Instant.parse("2021-01-18T10:00:00Z");
-        var expected = expectedOhlcResponse(start, end);
+        var expected = expectedOhlcResponse(start.truncatedTo(ChronoUnit.MINUTES), end);
         var actual = oxrClient()
                 .authWith(appId)
                 .rootPath("http://localhost:7777")
@@ -204,14 +205,14 @@ class OxrClientTest {
     @Test
     void should_return_ohlc_with_params() throws ExecutionException, InterruptedException {
         var api = "ohlc.json";
-        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0")
+        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0&start=2021-01-17T10:23:00Z&period=1d")
                 .willReturn(aResponse()
                         .withBodyFile(api)));
 
         var appId = "c4623da1b5d94162b3f32a2717d72483";
-        var start = Instant.parse("2021-01-17T10:00:00Z");
+        var start = Instant.parse("2021-01-17T10:23:12.123Z");
         var end = Instant.parse("2021-01-18T10:00:00Z");
-        var expected = expectedOhlcResponse(start, end);
+        var expected = expectedOhlcResponse(start.truncatedTo(ChronoUnit.MINUTES), end);
         OhlcRequestParams.Builder builder = ohlcParams(start, OxrPeriod.DAY)
                 .showBidAsk(true)
                 .showAlternative(true);
