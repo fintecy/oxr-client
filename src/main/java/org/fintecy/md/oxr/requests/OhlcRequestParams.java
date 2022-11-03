@@ -44,7 +44,7 @@ public class OhlcRequestParams extends QuoteRequestParams {
     @Override
     public Map<String, Object> toMap() {
         var map = super.toMap();
-        map.put("start", start.truncatedTo(ChronoUnit.MINUTES));
+        map.put("start_time", start.truncatedTo(ChronoUnit.MINUTES));
         map.put("period", period.getCode());
         return map;
     }
@@ -52,7 +52,7 @@ public class OhlcRequestParams extends QuoteRequestParams {
     @Override
     public String toString() {
         return "OhlcRequestParams{" +
-                "start=" + start +
+                "start_time=" + start +
                 ", period=" + period +
                 "} " + super.toString();
     }

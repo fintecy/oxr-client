@@ -186,7 +186,7 @@ class OxrClientTest {
     @Test
     void should_return_ohlc() throws ExecutionException, InterruptedException {
         var api = "ohlc.json";
-        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0&start=2021-01-17T10:23:00Z&period=1d")
+        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0&start_time=2021-01-17T10:23:00Z&period=1d")
                 .willReturn(aResponse()
                         .withBodyFile(api)));
 
@@ -206,7 +206,7 @@ class OxrClientTest {
     @Test
     void should_return_ohlc_with_params() throws ExecutionException, InterruptedException {
         var api = "ohlc.json";
-        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0&start=2021-01-17T10:23:00Z&period=1d")
+        stubFor(get("/" + api + "?prettyprint=0&show_alternative=0&start_time=2021-01-17T10:23:00Z&period=1d")
                 .willReturn(aResponse()
                         .withBodyFile(api)));
 
